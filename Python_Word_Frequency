@@ -1,0 +1,33 @@
+import requests
+from bs4 import BeautifulSoup
+from collections import Counter
+import re
+
+def get_webpage_text(url):
+    response=requests.get(url)
+
+    if response.status_code==200:
+        Soup=BeautifulSoup(response.text,'html.parser')
+        text=' '.join(Soup.stripped_strings)
+        return text
+    else:
+        print(f"Failed to retrieve data.Status code:{response.status_code}")
+        return" "
+    
+def calculate_word_frequency(text):
+    words=re.findall(r'\w+',text.lower())
+    word_count=Counter(words)
+    return word_count
+    
+if __name__=="__main__":
+    url="https://www.python.org/"
+    webpage_text=get_webpage_text(url)
+
+    if webpage_text: 
+        word_frequency = calculate_word_frequency(webpage_text)
+        print('Word Frequency on Python.org website: ')
+        for word,frequency in word_frequency.most_common(50):
+            print(f'{word}:{frequency}')
+    else:
+        print('Failed to fetch webpage text')
+
